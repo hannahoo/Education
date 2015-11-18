@@ -1,0 +1,19 @@
+<configuration>
+
+
+	<timestamp key="bySecond" datePattern="yyyyMMdd'T'HH"
+		timeReference="contextBirth" />
+
+	<property name="logdir" value="/web/logs" />
+
+	<include resource="common/logback_appender.xml" />
+<!-- 	<include resource="common/logback_logger.xml" /> -->
+
+
+	<root level="DEBUG">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>

@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title></title>
+    <style>
+        .css5-a {
+            line-height: 22px;
+        }
+        .css5-b {
+            line-height: 40px;
+        }
+    </style> 
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript">
+        var data_url = "http://localhost:8080/ocr/client/getQuestionAndAnswer";
+        var question_h5_id = "#tpTitle";
+        var answer_h5_id = "#tpContent";
+
+        $(function () {
+           
+            var queryid = getUrlParam("qid");
+            
+
+            var server_params = { question_id: queryid};
+
+            // 下载app数据
+            catchData(data_url, server_params, sucess_callback_standard_func);
+
+            
+        });
+
+        function sucess_callback_standard_func(data) {
+            try {
+
+                if (data) {
+                    if (!data.status.success) {
+                        alert(data.status.message);
+                        return;
+                    }
+                    if (data.data) {
+                        if (data.data.question_html) {
+                            var qst = data.data.question_html.replace(/< img/gi, "<img");
+                            qst = qst.replace(/width\s*:\s*\d+(%|px)?\s*;/gi, "width:100%;");
+                            qst = qst.replace(/width\s*=\s*("|')\d+(%|px)?\s*("|')/gi, "width=100%;");
+                            
+                            $(question_h5_id).html(qst);
+                        }
+                        if (data.data.answer_html) {
+                            var ans = data.data.answer_html.replace(/< img/gi, "<img");
+                            ans = ans.replace(/width\s*:\s*\d+(%|px)?\s*;/gi, "width:100%;");
+                            ans = ans.replace(/width\s*=\s*("|')\d+(%|px)?\s*("|')/gi, "width=100%;");
+                            $(answer_h5_id).html(ans);
+                        }
+                    }
+                    else {
+                        alert("nothing to do");
+                    }
+                }
+                else
+                    alert("nothing to do.");
+            } catch (e) {
+                alert(e);
+            }
+        }
+
+        // ********************************** COMMON METHOD *************************************
+        var catchData_buffer = []; // 全局变量，存储catchData函数的异步返回值。
+        function catchData(target_url, data, sucess_callback_standard_func, error_callback_standard_func, isSync, dataType) {
+            try {
+                if (isSync)
+                    isAsync = false;
+                else
+                    isAsync = true;
+
+                if (!dataType) dataType = "json";
+                //dataType = "html";
+                $.ajax({
+                    url: target_url,
+                    type: "GET",
+                    data: data,
+                    dataType: dataType,
+                    async: isAsync,
+                    success: function (data) {
+                        try {
+                            // alert("success\n" + data);
+                            // alert("success");
+                            if (sucess_callback_standard_func != undefined && sucess_callback_standard_func != null) {
+                                sucess_callback_standard_func(data);
+                            }
+                            else
+                                catchData_success_callback(data);
+
+                        } catch (e1) { alert("asyncCatchData.error: " + e1); }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("err: " + errorThrown);
+                        if (error_callback_standard_func != undefined && error_callback_standard_func != null)
+                            error_callback_standard_func(XMLHttpRequest, textStatus, errorThrown);
+                        else
+                            catchData_error_callback(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                });
+            } catch (e) {
+                alert("catchData.err: " + e);
+                // errWin("请检查服务器端接口是否存在。" + e);
+            }
+        }
+        //当本类获取远端JSON数据发生错误，且外部调用方未指定特定的回调方法时，将执行这个函数。
+        var catchData_error_callback = function (XMLHttpRequest, textStatus, errorThrown) { }
+
+        function getUrlParam(name) {
+            try {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return "";
+            } catch (e) { return ""; }
+        }
+        var ansDisped = false;
+        function ans_disp() {
+            try {
+                if (ansDisped){
+                    $('.ans_area').css('display', 'none');
+                    $("#btnAns").attr("value", "查看答案");
+                }
+                else{
+                    $('.ans_area').css('display', '');
+                    $("#btnAns").attr("value", "隐藏答案");
+                }
+                ansDisped = !ansDisped;
+                // $('#btn_ans').css('display', 'none'); 
+            }catch(e){}
+        }
+    </script>
+</head>
+<body>
+    
+    <!-- 
+        <div id="tpTitle"></div>
+        <div id="tpContent"></div>
+    -->
+    <table style="width:100%;height:100%;font-size:16px;line-height: 26px;">
+        <tr><td style="text-align:left;font-size:19px;">【问题】</td></tr>
+        <tr>
+            <td id="tpTitle" style="color:#666666;"></td>
+        </tr>
+        <tr id="btn_ans"><td><input id="btnAns" type="button" value="查看答案" onclick="ans_disp()" /></td></tr>
+        <tr class="ans_area" style="display:none;"><td><hr/></td></tr>
+        <tr class="ans_area" style=" display:none;"><td style="text-align:left;font-size:19px;">【答案】</td></tr>
+        <tr class="ans_area" style=" display:none;">
+            <td id="tpContent" style="color:#666666;"></td>
+        </tr>
+    </table>
+</body>
+</html>

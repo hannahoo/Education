@@ -1,0 +1,68 @@
+<included>
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- use the previously created timestamp to create a uniquely named log 
+			file -->
+		<file>${logdir}/ocr.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logdir}/ocr_%d{yyyyMMdd}/ocr.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>[%date][%-5level][%logger{36}] %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- use the previously created timestamp to create a uniquely named log 
+			file -->
+		<file>${logdir}/error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logdir}/error_%d{yyyyMMdd}/error.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>[%date][%-5level][%logger{36}] %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are by default assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+		<encoder>
+			<pattern>[%date][%-5level][%logger{36}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	
+
+	<appender name="SERVICE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logdir}/service.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logdir}/service_%d{yyyyMMdd}/service.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>[%date][%-5level][%logger{36}] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	
+
+</included>

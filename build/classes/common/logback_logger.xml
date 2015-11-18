@@ -1,0 +1,12 @@
+<included>
+
+
+	<logger name="com.e9w.ocr.service" additivity="true">
+		<level value="debug" />
+		<appender-ref ref="SERVICE" />
+	</logger>
+
+
+
+
+</included>
